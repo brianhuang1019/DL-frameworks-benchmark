@@ -81,13 +81,13 @@ if __name__ == '__main__':
 
     # logging training time
     times = {}
-    for idx, net_config in enumerate(cnn_config['nets']):
+    for _, net_config in enumerate(cnn_config['nets']):
         for b in cnn_config['batch_size']:
             batch_size = b
             train_iter = mx.io.NDArrayIter(mnist['train_data'], mnist['train_label'], batch_size, shuffle=True)
             val_iter = mx.io.NDArrayIter(mnist['test_data'], mnist['test_label'], batch_size)
 
-            key = "net{}-batch{}".format(idx, b)
+            key = "{}-batch{}".format(net_config['alias'], b)
             times[key] = []
 
             for t in range(cnn_config['test_times']):
