@@ -42,13 +42,13 @@ if __name__ == '__main__':
 
     # logging training time
     times = {}
-    for idx, net_config in enumerate(cnn_config['nets']):
+    for _, net_config in enumerate(cnn_config['nets']):
         for b in cnn_config['batch_size']:
             batch_size = b
             train_iter = iterators.SerialIterator(train, batch_size=batch_size, shuffle=True)
             test_iter = iterators.SerialIterator(test, batch_size=batch_size, repeat=False, shuffle=False)
 
-            key = "net{}-batch{}".format(idx, b)
+            key = "{}-batch{}".format(net_config['alias'], b)
             times[key] = []
 
             for t in range(cnn_config['test_times']):

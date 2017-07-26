@@ -2,9 +2,9 @@ mlp_config = {
     'layers': [2, 4, 6, 8, 10],
     'neurons': [16, 32, 128, 512, 1024],
     'batch_size': [32, 64, 128, 512, 1024],
-    'epochs': 10,
+    'epochs': 30,
     'optimizer': 'adam',
-    'test_times': 5,
+    'test_times': 10,
     'context': 'gpu'
 }
 
@@ -13,8 +13,6 @@ cnn_config = {
         {
             'kernal_v': 5,
             'kernal_h': 5,
-            'stride_v': 1,
-            'stride_h': 1,
             'depths': [20, 50],
             'fc_neurons': [500, 10],
             'act': 'tanh',
@@ -29,8 +27,8 @@ cnn_config = {
         }
     ],
     'batch_size': [32, 64, 128, 512, 1024],
-    'epochs': 10,
+    'epochs': 30,
     'optimizer': 'adam',
-    'test_times': 5,
+    'test_times': 10,
     'context': 'gpu'
 }
