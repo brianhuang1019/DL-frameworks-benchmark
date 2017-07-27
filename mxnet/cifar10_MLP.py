@@ -46,10 +46,10 @@ def net(layers, neurons):
 if __name__ == '__main__':
     # get cifar10 data
     cifar10 = {
-        'train_data': np.load('cifar10_training_data.npy'),
-        'train_label': np.load('cifar10_training_label.npy'),
-        'test_data': np.load('cifar10_testing_data.npy'),
-        'test_label': np.load('cifar10_testing_label.npy')
+        'train_data': np.load('../data/cifar10_training_data.npy'),
+        'train_label': np.load('../data/cifar10_training_label.npy'),
+        'test_data': np.load('../data/cifar10_testing_data.npy'),
+        'test_label': np.load('../data/cifar10_testing_label.npy')
     }
     print('cifar10 Data loaded')
     print('train_data', cifar10['train_data'].shape)
@@ -70,7 +70,7 @@ if __name__ == '__main__':
                 times[key] = []
 
                 for t in range(mlp_config['test_times']):
-                    print("Current process: {}, test {}".format(key, t))
+                    print("Cifar10 Current process: {}, test {}".format(key, t))
                     train_iter.reset()
                     val_iter.reset()
                     mlp_model = net(l, n)

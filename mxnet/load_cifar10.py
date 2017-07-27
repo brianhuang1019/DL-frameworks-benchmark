@@ -10,7 +10,7 @@ def unpickle(file):
         dict = pickle.load(fo, encoding='bytes')
     return dict
 
-cifar10_path = 'cifar-10-batches-py'
+cifar10_path = '../data/cifar-10-batches-py'
 
 cifar10_training_data = []
 cifar10_training_label = []
@@ -34,10 +34,10 @@ for f in os.listdir(cifar10_path):
     else:
         pass
 
-np.save('cifar10_training_data', cifar10_training_data)
-np.save('cifar10_training_label', cifar10_training_label)
-np.save('cifar10_testing_data', cifar10_testing_data)
-np.save('cifar10_testing_label', cifar10_testing_label)
+np.save('../data/cifar10_training_data', cifar10_training_data)
+np.save('../data/cifar10_training_label', cifar10_training_label)
+np.save('../data/cifar10_testing_data', cifar10_testing_data)
+np.save('../data/cifar10_testing_label', cifar10_testing_label)
 
 print('cifar10_training_data.shape', np.array(cifar10_training_data).shape)
 print('cifar10_training_label.shape', np.array(cifar10_training_label).shape)

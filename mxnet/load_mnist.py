@@ -10,7 +10,7 @@ if __name__ == '__main__':
     print('test_data', mnist['test_data'].shape)
     print('test_label', mnist['test_label'].shape)
 
-    np.save('mnist_training_data', mnist['train_data'])
-    np.save('mnist_training_label', mnist['train_label'])
-    np.save('mnist_testing_data', mnist['test_data'])
-    np.save('mnist_testing_label', mnist['test_label'])
+    np.save('../data/mnist_training_data', mnist['train_data'])
+    np.save('../data/mnist_training_label', mnist['train_label'])
+    np.save('../data/mnist_testing_data', mnist['test_data'])
+    np.save('../data/mnist_testing_label', mnist['test_label'])

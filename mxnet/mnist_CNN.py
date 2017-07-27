@@ -68,10 +68,10 @@ def net(n_config):
 if __name__ == '__main__':
     # get mnist data
     mnist = {
-        'train_data': np.load('mnist_training_data.npy'),
-        'train_label': np.load('mnist_training_label.npy'),
-        'test_data': np.load('mnist_testing_data.npy'),
-        'test_label': np.load('mnist_testing_label.npy')
+        'train_data': np.load('../data/mnist_training_data.npy'),
+        'train_label': np.load('../data/mnist_training_label.npy'),
+        'test_data': np.load('../data/mnist_testing_data.npy'),
+        'test_label': np.load('../data/mnist_testing_label.npy')
     }
     print('mnist Data loaded')
     print('train_data', mnist['train_data'].shape)
@@ -91,7 +91,7 @@ if __name__ == '__main__':
             times[key] = []
 
             for t in range(cnn_config['test_times']):
-                print("Current process: {}, test {}".format(key, t))
+                print("MNIST Current process: {}, test {}".format(key, t))
                 train_iter.reset()
                 val_iter.reset()
                 cnn_model = net(net_config)
