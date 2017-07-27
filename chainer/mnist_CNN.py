@@ -40,7 +40,7 @@ if __name__ == '__main__':
             times[key] = []
 
             for t in range(cnn_config['test_times']):
-                print("Current process: MLP {}, test {}".format(key, t))
+                print("MNIST Current process: MLP {}, test {}".format(key, t))
 
                 model = L.Classifier(CNN(net_config))
                 if cnn_config['context'] == 'gpu':

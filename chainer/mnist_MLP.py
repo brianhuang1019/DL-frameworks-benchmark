@@ -39,7 +39,7 @@ if __name__ == '__main__':
                 times[key] = []
 
                 for t in range(mlp_config['test_times']):
-                    print("Current process: MLP {}, test {}".format(key, t))
+                    print("MNIST Current process: MLP {}, test {}".format(key, t))
 
                     model = L.Classifier(MLP(l, n, 10))  # the input size, 784, is inferred
                     if mlp_config['context'] == 'gpu':

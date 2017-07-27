@@ -22,10 +22,10 @@ np_output_file = 'exp_cifar10_cnn_{}'.format(cnn_config['context'])
 if __name__ == '__main__':
     # get cifar10 data
     cifar10 = {
-        'train_data': np.load('cifar10_training_data.npy').astype(np.float32) / 255.,
-        'train_label': np.load('cifar10_training_label.npy').astype(np.int32),
-        'test_data': np.load('cifar10_testing_data.npy').astype(np.float32) / 255.,
-        'test_label': np.load('cifar10_testing_label.npy').astype(np.int32)
+        'train_data': np.load('../data/cifar10_training_data.npy').astype(np.float32) / 255.,
+        'train_label': np.load('../data/cifar10_training_label.npy').astype(np.int32),
+        'test_data': np.load('../data/cifar10_testing_data.npy').astype(np.float32) / 255.,
+        'test_label': np.load('../data/cifar10_testing_label.npy').astype(np.int32)
     }
     print('train_data', cifar10['train_data'].shape)
     print('train_label', cifar10['train_label'].shape)
@@ -52,7 +52,7 @@ if __name__ == '__main__':
             times[key] = []
 
             for t in range(cnn_config['test_times']):
-                print("Current process: cifar10 {}, test {}".format(key, t))
+                print("Cifar10 Current process: {}, test {}".format(key, t))
 
                 model = L.Classifier(CNN(net_config))
                 if cnn_config['context'] == 'gpu':
