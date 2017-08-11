@@ -5,13 +5,18 @@ import pickle
 import logging
 logging.getLogger().setLevel(logging.DEBUG)  # logging to stdout
 
+import util
+import sys
+sys.path.append('..')
 import config   # training configs
 cnn_config = config.cnn_config
 
 import mxnet as mx
 import numpy as np
 
-np_output_file = 'exp_mnist_cnn_{}'.format(cnn_config['context'])
+exp_output_file = 'exp_mnist_cnn_{}'.format(cnn_config['context'])
+if cnn_config['context'] == 'multi-gpu':
+    exp_output_file += "-{}".format(cnn_config['gpus'])
 
 def net(n_config):
     print('net config', n_config)
@@ -60,6 +65,10 @@ def net(n_config):
         model = mx.mod.Module(symbol=cnn, context=mx.cpu())
     elif cnn_config['context'] == 'gpu':
         model = mx.mod.Module(symbol=cnn, context=mx.gpu())
+    elif cnn_config['context'] == 'multi-gpu':
+        assert cnn_config['gpus'] > 1
+        gpus = [mx.gpu(i) for i in range(cnn_config['gpus'])]
+        model = mx.mod.Module(symbol=cnn, context=gpus)
     else:
         pass
 
@@ -101,18 +110,18 @@ if __name__ == '__main__':
                     optimizer=cnn_config['optimizer'],  # use SGD to train
                     optimizer_params={'learning_rate': 0.001},  # use fixed learning rate
                     eval_metric='acc',  # report accuracy during training
-                    batch_end_callback = mx.callback.Speedometer(batch_size, 100), # output progress for each 100 data batches
+                    batch_end_callback = mx.callback.Speedometer(batch_size, util.decideInterval(mnist['train_data'].shape[0], batch_size)), # output progress for each 100 data batches
                     num_epoch=cnn_config['epochs'])  # train for at most 10 dataset passes
                 times[key].append(float(time.time()-ts))
 
-    pickle.dump(times, open(np_output_file, 'wb'), True)
+    pickle.dump(times, open(exp_output_file, 'wb'), True)
     
-    # predict probability of mlp
+    # predict probability of cnn
     test_iter = mx.io.NDArrayIter(mnist['test_data'], None, batch_size)
     prob = cnn_model.predict(test_iter)
     assert prob.shape == (10000, 10)
     
-    # predict accuracy of mlp
+    # predict accuracy of cnn
     test_iter = mx.io.NDArrayIter(mnist['test_data'], mnist['test_label'], batch_size)
     acc = mx.metric.Accuracy()
     cnn_model.score(test_iter, acc)

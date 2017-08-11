@@ -5,13 +5,18 @@ import pickle
 import logging
 logging.getLogger().setLevel(logging.DEBUG)  # logging to stdout
 
+import util
+import sys
+sys.path.append('..')
 import config   # training configs
 mlp_config = config.mlp_config
 
 import mxnet as mx
 import numpy as np
 
-np_output_file = 'exp_mnist_mlp_{}'.format(mlp_config['context'])
+exp_output_file = 'exp_mnist_mlp_{}'.format(mlp_config['context'])
+if mlp_config['context'] == 'multi-gpu':
+    exp_output_file += "-{}".format(mlp_config['gpus'])
 
 def net(layers, neurons):
     data = mx.sym.Variable('data')
@@ -38,6 +43,10 @@ def net(layers, neurons):
         model = mx.mod.Module(symbol=mlp, context=mx.cpu())
     elif mlp_config['context'] == 'gpu':
         model = mx.mod.Module(symbol=mlp, context=mx.gpu())
+    elif mlp_config['context'] == 'multi-gpu':
+        assert mlp_config['gpus'] > 1
+        gpus = [mx.gpu(i) for i in range(mlp_config['gpus'])]
+        model = mx.mod.Module(symbol=mlp, context=gpus)
     else:
         pass
 
@@ -80,11 +89,11 @@ if __name__ == '__main__':
                         optimizer=mlp_config['optimizer'],  # use SGD to train
                         optimizer_params={'learning_rate': 0.001},  # use fixed learning rate
                         eval_metric='acc',  # report accuracy during training
-                        batch_end_callback = mx.callback.Speedometer(batch_size, 100), # output progress for each 100 data batches
+                        batch_end_callback = mx.callback.Speedometer(batch_size, util.decideInterval(mnist['train_data'].shape[0], batch_size)), # output progress for each 100 data batches
                         num_epoch=mlp_config['epochs'])  # train for at most 10 dataset passes
                     times[key].append(float(time.time()-ts))
+                    pickle.dump(times, open(exp_output_file, 'wb'), True)
 
-    pickle.dump(times, open(np_output_file, 'wb'), True)
     
     # predict probability of mlp
     test_iter = mx.io.NDArrayIter(mnist['test_data'], None, batch_size)
