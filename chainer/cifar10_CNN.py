@@ -4,6 +4,9 @@ import numpy as np
 
 import time
 import pickle
+
+import sys
+sys.path.append('..')
 import config   # training configs
 cnn_config = config.cnn_config
 
@@ -17,7 +20,9 @@ from chainer.training import extensions
 
 from nets import CNN, LeNet5, VGG16, ResNet152
 
-np_output_file = 'exp_cifar10_cnn_{}'.format(cnn_config['context'])
+exp_output_file = 'exp_cifar10_cnn_{}'.format(cnn_config['context'])
+if cnn_config['context'] == 'multi-gpu':
+    exp_output_file += "-{}".format(cnn_config['gpus'])
 
 if __name__ == '__main__':
     # get cifar10 data
@@ -52,7 +57,7 @@ if __name__ == '__main__':
             times[key] = []
 
             for t in range(cnn_config['test_times']):
-                print("Cifar10 Current process: {}, test {}".format(key, t))
+                print("Cifar10 Current process: CNN {}, test {}".format(key, t))
 
                 model = L.Classifier(CNN(net_config))
                 if cnn_config['context'] == 'gpu':
@@ -65,19 +70,27 @@ if __name__ == '__main__':
     
                 if cnn_config['context'] == 'gpu':
                     updater = training.StandardUpdater(train_iter, optimizer, device=0)
+                elif cnn_config['context'] == 'multi-gpu':
+                    assert cnn_config['gpus'] > 1
+                    device_dict = {'main': 0}
+                    for i in range(cnn_config['gpus']-1):
+                        device_dict["gpu_{}".format(i+1)] = i+1
+                    updater = training.ParallelUpdater(train_iter, optimizer, devices=device_dict)
                 else:
                     updater = training.StandardUpdater(train_iter, optimizer)
                 trainer = training.Trainer(updater, (cnn_config['epochs'], 'epoch'), out='result')
                     
                 if cnn_config['context'] == 'gpu':
                     trainer.extend(extensions.Evaluator(test_iter, model, device=0))
+                elif cnn_config['context'] == 'multi-gpu':
+                    trainer.extend(extensions.Evaluator(test_iter, model, device=0))
                 else:
                     trainer.extend(extensions.Evaluator(test_iter, model))
                 trainer.extend(extensions.LogReport())
                 trainer.extend(extensions.PrintReport(['epoch', 'main/accuracy', 'validation/main/accuracy']))
-                trainer.extend(extensions.ProgressBar())
+                # trainer.extend(extensions.ProgressBar())
 
                 ts = time.time()
                 trainer.run()
                 times[key].append(float(time.time()-ts))
-    pickle.dump(times, open(np_output_file, 'wb'), True)
+    pickle.dump(times, open(exp_output_file, 'wb'), True)
