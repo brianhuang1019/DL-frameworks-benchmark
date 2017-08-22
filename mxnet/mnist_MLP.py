@@ -67,7 +67,7 @@ if __name__ == '__main__':
     print('test_label', mnist['test_label'].shape)
 
     # logging training time
-    times = {}
+    times = pickle.load(open(exp_output_file, "rb"))
     for l in mlp_config['layers']:
         for n in mlp_config['neurons']:
             for b in mlp_config['batch_size']:
