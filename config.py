@@ -1,11 +1,12 @@
 mlp_config = {
-    'layers': [2, 4, 6, 8, 10],
-    'neurons': [16, 32, 128, 512, 1024],
-    'batch_size': [32, 64, 128, 512, 1024],
-    'epochs': 30,
+    'layers': [2, 6, 10],
+    'neurons': [16, 1024, 4096],
+    'batch_size': [32, 1024, 4096],
+    'epochs': 2,
     'optimizer': 'adam',
-    'test_times': 10,
-    'context': 'gpu'
+    'test_times': 5,
+    'context': 'multi-gpu',
+    'gpus': 4
 }
 
 cnn_config = {
@@ -13,6 +14,8 @@ cnn_config = {
         {
             'kernal_v': 5,
             'kernal_h': 5,
+            'stride_v': 1,
+            'stride_h': 1,
             'depths': [20, 50],
             'fc_neurons': [500, 10],
             'act': 'tanh',
@@ -23,12 +26,14 @@ cnn_config = {
                 'stride_v': 2,
                 'stride_h': 2
             },
+            'alias': 'lenet',
             'description': 'lenet'
         }
     ],
-    'batch_size': [32, 64, 128, 512, 1024],
-    'epochs': 30,
+    'batch_size': [32, 1024, 4096],
+    'epochs': 10,
     'optimizer': 'adam',
-    'test_times': 10,
-    'context': 'gpu'
+    'test_times': 5,
+    'context': 'multi-gpu',
+    'gpus': 4
 }
